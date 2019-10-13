@@ -1,12 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8ffd27b4-acfa-44cb-832d-cdb7ee041fb1" name="Default Changelist" comment="" />
+    <list default="true" id="e676fb38-e3ca-4ca2-b93d-d10210bee94b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/$PRODUCT_WORKSPACE_FILE$" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SparkCalc.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/SparkCalc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/SparkSocket.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/PM2P5R.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/SparkCalc$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SparkCalc$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/SparkCalc$2$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SparkCalc$2$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/SparkCalc$2$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SparkCalc$2$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/SparkCalc$2$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SparkCalc$2$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/SparkCalc$2$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SparkCalc$2$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/SparkCalc$2$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SparkCalc$2$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/SparkCalc$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SparkCalc$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/SparkCalc.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/SparkCalc.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/SparkSocket.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/sparkExec-1.0-SNAPSHOT.jar" beforeDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
@@ -16,10 +44,11 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectId" id="1S8Kj7yGrgLEWhbgrLEnWISaVC0" />
+  <component name="ProjectId" id="1S90dx6hQcBjsyiJncnxAiJBOCQ" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="ignore_missing_gitignore" value="true" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -43,19 +72,6 @@
     </option>
   </component>
   <component name="RunManager" selected="Application.LogicServer">
-    <configuration name="CSVReader" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="CSV.CSVReader" />
-      <module name="sparkExec" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="CSV.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="LogicServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="LogicServer" />
       <module name="sparkExec" />
@@ -74,7 +90,6 @@
       <list>
         <item itemvalue="Application.SparkCalc" />
         <item itemvalue="Application.LogicServer" />
-        <item itemvalue="Application.CSVReader" />
       </list>
     </recent_temporary>
   </component>
@@ -83,17 +98,28 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="8ffd27b4-acfa-44cb-832d-cdb7ee041fb1" name="Default Changelist" comment="" />
-      <created>1570939914745</created>
+      <changelist id="e676fb38-e3ca-4ca2-b93d-d10210bee94b" name="Default Changelist" comment="" />
+      <created>1570960594537</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1570939914745</updated>
-      <workItem from="1570939917741" duration="5289000" />
+      <updated>1570960594537</updated>
+      <workItem from="1570960598619" duration="3322000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="ideajad">
     <property name="annotate" value="false" />

@@ -1,5 +1,6 @@
 import okhttp3.*;
 import com.alibaba.fastjson.*;
+import org.apache.commons.math3.exception.MathIllegalStateException;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
@@ -7,10 +8,16 @@ import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.*;
 import scala.Tuple2;
 
+import com.cloudera.sparkts.models.*;
+import org.apache.spark.mllib.linalg.Vector;
+import org.apache.spark.mllib.linalg.Vectors;
+
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 public class SparkCalc {
 
@@ -24,7 +31,13 @@ public class SparkCalc {
     private static int count = 0;
     private static double sumPM = 0.0;
     private static double tmpValue = 0.0;
-    private static String tmpStamp = "";
+    private static List<Double> pmList = new ArrayList<>();
+
+    private static String tmpYear = "";
+    private static String tmpMonth = "";
+    private static String tmpDay = "";
+    private static String lastHour = "";
+    private static String tmpHour = "";
 
     public static void main(String[] args) throws Exception {
 //        if (args.length < 4) {
@@ -83,16 +96,11 @@ public class SparkCalc {
                     if (key.equals("PM")) {
                         count++;
                         sumPM += SparkCalc.getTmpValue();
+                        pmList.add(SparkCalc.getTmpValue());
                     }
-                }
-                if (count != 0) {
-                    result.put("average pm2.5", sumPM / count);
-                } else {
-                    result.put("average pm2.5", 0);
                 }
 
                 String[] timeKeys = {"year", "month", "day", "hour"};
-                String time = "";
                 for (final String timeKey : timeKeys) {
                     JavaPairRDD<String, String> pairRDD = rdd.mapToPair(new PairFunction<JSONObject, String, String>() {
                         public Tuple2<String, String> call(JSONObject obj) throws Exception {
@@ -102,31 +110,61 @@ public class SparkCalc {
 
                     pairRDD.foreach(new VoidFunction<Tuple2<String, String>>() {
                         public void call(Tuple2<String, String> tuple2) throws Exception {
-                            SparkCalc.setTmpStamp(tuple2._2());
+                            switch (tuple2._1()) {
+                                case "year":
+                                    SparkCalc.setTmpYear(tuple2._2());
+                                    break;
+                                case "month":
+                                    SparkCalc.setTmpMonth(tuple2._2());
+                                    break;
+                                case "day":
+                                    SparkCalc.setTmpDay(tuple2._2());
+                                    break;
+                                case "hour":
+                                    SparkCalc.setLastHour(SparkCalc.getTmpHour());
+                                    SparkCalc.setTmpHour(tuple2._2());
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     });
+                }
+                String time = tmpYear + "-" + tmpMonth + "-" + tmpDay + " " + tmpHour + ":00:00";
+                result.put("time", time);
 
-                    time += SparkCalc.getTmpStamp();
-                    switch (timeKey) {
-                        case "year":
-                            time += "-";
-                            break;
-                        case "month":
-                            time += "-";
-                            break;
-                        case "day":
-                            time += " ";
-                            break;
-                        case "hour":
-                            time += ":00:00";
-                            break;
-                        default:
-                            break;
+                int width = 180;
+                int startIdx = pmList.size() - width - 1;
+                int predictN = 1;
+                double[] trainSet = new double[width];
+                double predict = 0.0;
+                if (startIdx >= 0) {
+                    for (int i = 0; i < width; i++) {
+                        trainSet[i] = pmList.get(startIdx + i);
                     }
+                    Vector ts = Vectors.dense(trainSet);
+                    Vector res = hwForecast(ts, predictN, 72);
+                    if (res == null) {
+                        predict = result.getDouble("PM");
+                    } else {
+                        predict = res.toArray()[0];
+                    }
+                    result.put("predict", predict);
+                } else {
+                    result.put("predict", result.getDouble("PM"));
                 }
 
-                result.put("time", time);
-                if (result.getDouble("average pm2.5") != 0 && result.getString("time").length() >= 16) {
+                if (count < 7) {
+                    result.put("average pm2.5", result.getDouble("PM"));
+                } else {
+                    double sumPM = 0.0;
+                    for (int i = 0; i < 7; i++) {
+                        sumPM += pmList.get(pmList.size() - i - 1);
+                    }
+                    result.put("average pm2.5", sumPM / 7);
+                }
+
+                if (result.getDouble("average pm2.5") != 0 && !(tmpYear.equals(tmpMonth) && tmpYear.equals(tmpDay)) && !lastHour.equals(tmpHour)) {
                     post(url, result.toJSONString());
                     System.out.println(result);
                 }
@@ -164,6 +202,27 @@ public class SparkCalc {
         }
     }
 
+    /**
+     * 使用Holt-Winter模型对时间序列进行拟合
+     *
+     * @param ts         time series, 按时间排列的属性值，本项目中为pm2.5
+     * @param predictedN 预测值的个数
+     * @param period     时间序列的周期(需要人工估计)
+     * @return 按顺序排列的预测值
+     */
+    private static Vector hwForecast(Vector ts, int predictedN, int period) {
+        try {
+            HoltWintersModel model = HoltWinters.fitModelWithBOBYQA(ts, period, "additive");
+            Vector dest = Vectors.zeros(predictedN);
+            model.forecast(ts, dest);
+            return dest;
+        } catch (MathIllegalStateException e) {
+            //存在计算失败的情况，需要考虑怎么填入无法预测的值
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static double getTmpValue() {
         return tmpValue;
     }
@@ -172,12 +231,44 @@ public class SparkCalc {
         SparkCalc.tmpValue = tmpValue;
     }
 
-    public static String getTmpStamp() {
-        return tmpStamp;
+    public static String getTmpYear() {
+        return tmpYear;
     }
 
-    public static void setTmpStamp(String tmpStamp) {
-        SparkCalc.tmpStamp = tmpStamp;
+    public static void setTmpYear(String tmpYear) {
+        SparkCalc.tmpYear = tmpYear;
+    }
+
+    public static String getTmpMonth() {
+        return tmpMonth;
+    }
+
+    public static void setTmpMonth(String tmpMonth) {
+        SparkCalc.tmpMonth = tmpMonth;
+    }
+
+    public static String getTmpDay() {
+        return tmpDay;
+    }
+
+    public static void setTmpDay(String tmpDay) {
+        SparkCalc.tmpDay = tmpDay;
+    }
+
+    public static String getLastHour() {
+        return lastHour;
+    }
+
+    public static void setLastHour(String lastHour) {
+        SparkCalc.lastHour = lastHour;
+    }
+
+    public static String getTmpHour() {
+        return tmpHour;
+    }
+
+    public static void setTmpHour(String tmpHour) {
+        SparkCalc.tmpHour = tmpHour;
     }
 
 }
